@@ -19,5 +19,4 @@ In short, I wanted to play around with [TermWind](https://github.com/nunomaduro/
 * displays if the letters of the guess are contained in the target word and are in the same position
 
 ### Todo
-* Exit the cli if the correct word is guessed or too many guesses
 * add `--share` option that mimics the real wordle

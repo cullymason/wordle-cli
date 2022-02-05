@@ -17,6 +17,7 @@ class Play extends Command
     private Collection $answers;
     private string $startDate = "2022-02-05";
     private int $startWordle = 231;
+    private string $gameStatus = "inProgress";
     /**
      * The signature of the command.
      *
@@ -47,16 +48,26 @@ class Play extends Command
     public function handle()
     {
 
-        dd($this->currentWord);
 
         terminal()->clear();
-        render("<div class='p-4 bg-blue-600 text-white'>Wordle CLI</div>");
-        $this->showBoard();
-        while(sizeof($this->guesses) <= $this->maximumGuesses)
+
+
+        if($this->gameStatus === "inProgress")
+        {
+            $this->showBoard();
+        }
+
+        //while(sizeof($this->guesses) <= $this->maximumGuesses)
+        while($this->gameStatus === "inProgress")
         {
 
+            if($this->guessesRemaining() < 1)
+            {
+                $this->gameStatus = "failure";
+                $this->error('Sorry, you are out of guesses');
+                break;
+            }
             $guess = $this->askForGuess();
-
             $isValid = $this->validateGuess($guess);
 
             if($isValid)
@@ -66,6 +77,13 @@ class Play extends Command
 
             $this->showBoard();
 
+            if($this->currentWord === $guess)
+            {
+                $this->gameStatus = "victory";
+                $this->line('You did it!');
+                break;
+            }
+
         }
     }
 
@@ -73,15 +91,15 @@ class Play extends Command
     private function setAnswer()
     {
         $startDate = Carbon::parse($this->startDate);
-        $currentDate = Carbon::now()->addDay(3);
 
-        $diff = $startDate->diffInDays($currentDate);
-
+        $diff = $startDate->diffInDays(Carbon::now());
+        $this->startWordle = $this->startWordle+$diff;
         $this->currentWord=$this->answers->get($this->startWordle);
 
     }
     private function askForGuess() : string|null
     {
+        render("<div class='text-white mt-1'><span class='px-1 bg-slate-500'>Remaining Guesses:</span> {$this->guessesRemaining()}</div>");
         return ask(<<<HTML
             <span class="mt-2 mr-1 bg-green px-1 text-black">
                 Guess a 5 letter word:
@@ -133,29 +151,32 @@ class Play extends Command
     {
         $this->guesses->each(fn($word) => $this->showRow($word));
 
-        foreach(range(1,$this->guessesRemaining()) as $blankRow)
+        if($this->guessesRemaining() > 0)
         {
-              $this->showRow("",true);
+            foreach(range(1,$this->guessesRemaining()) as $blankRow)
+            {
+                $this->showRow("",true);
+            }
         }
     }
     private function validateGuess(string $guess) : bool
     {
         if(str_contains($guess, ' '))
         {
-            $this->error("word cannot contain spaces.");
+            $this->showError("word cannot contain spaces.");
             return false;
         }
         $guessArray = str_split(trim($guess));
 
         if(sizeof($guessArray) < 5)
         {
-            $this->error('That guess is not long enough');
+            $this->showError('That guess is not long enough');
             return false;
         }
 
         if(sizeof($guessArray) > 5)
         {
-            $this->error('That guess is too long');
+            $this->showError('That guess is too long');
             return false;
         }
         // check if valid word
@@ -163,15 +184,20 @@ class Play extends Command
 
         if(! pspell_check($pspell, $guess))
         {
-            $this->error('That is not a valid word');
+            $this->showError('That is not a valid word');
             return false;
         }
         if($this->guesses->contains($guess))
         {
-            $this->error('You already guessed that');
+            $this->showError('You already guessed that');
             return false;
         }
 
         return true;
+    }
+
+    private function showError(string $message)
+    {
+        render("<div class='mt-1 text-white bg-gray-900'><span class='text-red-600 font-bold mr-1'>Whoops</span> {$message}</div>");
     }
 }
