@@ -1,5 +1,5 @@
 {
-    "name": "wordle-cli",
+    "name": "cullymason/wordle-cli",
     "description": "A Prototype of Wordle",
     "keywords": ["termwind", "laravel", "php", "console", "cli"],
     "homepage": "https://cully.dev",
