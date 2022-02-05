@@ -1,28 +1,29 @@
 {
-    "name": "laravel-zero/laravel-zero",
-    "description": "The Laravel Zero Framework.",
-    "keywords": ["framework", "laravel", "laravel zero", "console", "cli"],
-    "homepage": "https://laravel-zero.com",
+    "name": "cullymason/wordle-cli",
+    "description": "A Prototype of Wordle",
+    "keywords": ["termwind", "laravel", "php", "console", "cli"],
+    "homepage": "https://cully.dev",
     "type": "project",
+    "version": "1.0",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/laravel-zero/laravel-zero/issues",
-        "source": "https://github.com/laravel-zero/laravel-zero"
+        "issues": "https://github.com/cullymason/wordle-cli/issues",
+        "source": "https://github.com/cullymason/wordle-cli"
     },
     "authors": [
         {
-            "name": "Nuno Maduro",
-            "email": "enunomaduro@gmail.com"
+            "name": "Cully Mason",
+            "email": "cully@hey.com"
         }
     ],
     "require": {
         "php": "^8.0",
         "ext-pspell": "*",
-        "laravel-zero/framework": "^8.8",
-        "nunomaduro/termwind": "^1.4",
-        "symfony/browser-kit": "^6.0"
+
+        "nunomaduro/termwind": "^1.4"
     },
     "require-dev": {
+        "laravel-zero/framework": "^8.8",
         "mockery/mockery": "^1.4.3",
         "pestphp/pest": "^1.3"
     },
@@ -43,5 +44,5 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "bin": ["wordle-cli"]
+    "bin": ["builds/wordle-cli"]
 }
