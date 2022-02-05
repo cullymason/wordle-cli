@@ -1,10 +1,9 @@
 {
-    "name": "cullymason/wordle-cli",
+    "name": "wordle-cli",
     "description": "A Prototype of Wordle",
     "keywords": ["termwind", "laravel", "php", "console", "cli"],
     "homepage": "https://cully.dev",
     "type": "project",
-    "version": "1.0",
     "license": "MIT",
     "support": {
         "issues": "https://github.com/cullymason/wordle-cli/issues",
