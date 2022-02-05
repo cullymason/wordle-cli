@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Commands;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use LaravelZero\Framework\Commands\Command;
+use Symfony\Component\BrowserKit\AbstractBrowser;
 use function Termwind\{render, ask, terminal};
 
 
@@ -12,6 +14,9 @@ class Play extends Command
     public int $maximumGuesses = 6;
     private string $currentWord = "stair";
     private Collection $guesses;
+    private Collection $answers;
+    private string $startDate = "2022-02-05";
+    private int $startWordle = 231;
     /**
      * The signature of the command.
      *
@@ -26,6 +31,14 @@ class Play extends Command
      */
     protected $description = 'Starts wordle game';
 
+    public function __construct()
+    {
+        parent::__construct();
+        $this->guesses= collect();
+        $this->answers=collect(config('answers'));
+        $this->setAnswer();
+
+    }
     /**
      * Execute the console command.
      *
@@ -33,6 +46,9 @@ class Play extends Command
      */
     public function handle()
     {
+
+        dd($this->currentWord);
+
         terminal()->clear();
         render("<div class='p-4 bg-blue-600 text-white'>Wordle CLI</div>");
         $this->showBoard();
@@ -53,12 +69,17 @@ class Play extends Command
         }
     }
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->guesses= collect();
-    }
 
+    private function setAnswer()
+    {
+        $startDate = Carbon::parse($this->startDate);
+        $currentDate = Carbon::now()->addDay(3);
+
+        $diff = $startDate->diffInDays($currentDate);
+
+        $this->currentWord=$this->answers->get($this->startWordle);
+
+    }
     private function askForGuess() : string|null
     {
         return ask(<<<HTML

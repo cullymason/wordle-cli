@@ -20,5 +20,4 @@ In short, I wanted to play around with [TermWind](https://github.com/nunomaduro/
 
 ### Todo
 * Exit the cli if the correct word is guessed or too many guesses
-* pull the target word from the wordle site
 * add `--share` option that mimics the real wordle

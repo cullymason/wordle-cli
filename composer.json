@@ -17,9 +17,10 @@
     ],
     "require": {
         "php": "^8.0",
+        "ext-pspell": "*",
         "laravel-zero/framework": "^8.8",
         "nunomaduro/termwind": "^1.4",
-        "ext-pspell": "*"
+        "symfony/browser-kit": "^6.0"
     },
     "require-dev": {
         "mockery/mockery": "^1.4.3",
