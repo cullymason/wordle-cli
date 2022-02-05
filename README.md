@@ -6,10 +6,9 @@ In short, I wanted to play around with [TermWind](https://github.com/nunomaduro/
 
 ## Current Functionality
 
-### "installation"
+### Installation
 
-1. clone this repo
-2. run `php wordle-cli`
+ `composer global require cullymason/wordle-cli`
 
 ### Guess Validation
 * Must be 6 letters
