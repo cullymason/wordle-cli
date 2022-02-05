@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.0",
         "ext-pspell": "*",
-
+        "laravel-zero/phar-updater": "^1.0.6",
         "nunomaduro/termwind": "^1.4"
     },
     "require-dev": {
