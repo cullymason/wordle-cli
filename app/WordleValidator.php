@@ -4,12 +4,18 @@ namespace App;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
 use function Termwind\render;
-
+use App\WordleDecorator;
 
 class WordleValidator
 {
-
+    public WordleDecorator $decorator;
     const GUESS_LENGTH = 5;
+
+    public function __construct()
+    {
+        $this->decorator = new WordleDecorator();
+    }
+
 
 
     /**
@@ -32,7 +38,7 @@ class WordleValidator
 
         if($errorMessage !== null)
         {
-            $this->showError($errorMessage);
+            $this->decorator->showError($errorMessage);
             return false;
         }
 
@@ -91,13 +97,4 @@ class WordleValidator
         return str_split(trim($guess));
     }
 
-    /**
-     * @param string $message
-     *
-     * @return void
-     */
-    private function showError(string $message)
-    {
-        render("<div class='mt-1 text-white bg-gray-900'><span class='text-red-600 font-bold mr-1'>Whoops</span> {$message}</div>");
-    }
 }
