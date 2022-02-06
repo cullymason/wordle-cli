@@ -120,7 +120,7 @@ class Play extends Command
         {
             $style="yellow";
 
-            if($currentWordCollection->search($letter) === $position)
+            if($currentWordCollection->get($position) === $letter)
             {
                 $style="green";
             }
