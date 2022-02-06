@@ -4,6 +4,7 @@ namespace App\Commands;
 use App\WordleDecorator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use LaravelZero\Framework\Commands\Command;
 use function Termwind\{terminal};
 use App\WordleValidator;
@@ -51,44 +52,53 @@ class Play extends Command
     public function handle(Collection $guesses)
     {
 
-        terminal()->clear();
-
-        if($this->gameStatus === "inProgress")
-        {
-            $this->showBoard();
-        }
-
         while($this->gameStatus === "inProgress")
         {
+            terminal()->clear();
 
             if($this->guessesRemaining() < 1)
             {
                 $this->gameStatus = "fail";
-                $this->decorator->showError('Sorry, you are out of guesses');
                 break;
             }
+
+            $this->showBoard();
             $this->decorator->showRemaining($this->guessesRemaining());
+            if(Cache::has('errorMessage'))
+            {
+                $this->decorator->showError(Cache::get('errorMessage'));
+            }
+
             $guess = $this->decorator->askForGuess();
             $isValid = $this->validator->validateGuess($guess, $this->guesses);
-
             if($isValid)
             {
                 $this->submitGuess($guess);
             }
 
-            $this->showBoard();
+
 
             if($this->currentWord === $guess)
             {
                 $this->gameStatus = "victory";
-                $this->decorator->showSuccess('You did it!');
+
                 break;
             }
 
         }
+        terminal()->clear();
+        $this->showBoard();
+        if($this->gameStatus == "fail")
+        {
+            $this->decorator->showError("Sorry, you are out of guesses");
+        }
+        if($this->gameStatus === "victory")
+        {
+
+            $this->decorator->showSuccess('You did it!');
+        }
     }
-
-
+    
     private function setAnswer()
     {
         $answers = collect(config('answers'));

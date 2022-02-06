@@ -2,6 +2,7 @@
 
 namespace App;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use JetBrains\PhpStorm\Pure;
 use function Termwind\render;
 use App\WordleDecorator;
@@ -26,6 +27,7 @@ class WordleValidator
      */
     public function validateGuess(string|null $guess, Collection $guesses) : bool
     {
+
         $errorMessage = match(true) {
             $guess === null => "You forgot to guess",
             $this->containsSpaces($guess) => "word cannot contain spaces.",
@@ -35,14 +37,8 @@ class WordleValidator
             $guesses->contains($guess) => 'You already guessed that',
             default => null
         };
-
-        if($errorMessage !== null)
-        {
-            $this->decorator->showError($errorMessage);
-            return false;
-        }
-
-        return true;
+        Cache::set('errorMessage', $errorMessage);
+        return $errorMessage === null;
     }
 
 

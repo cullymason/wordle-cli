@@ -2,15 +2,19 @@
 
 namespace App;
 
+
+use Illuminate\Support\Facades\Cache;
 use function Termwind\ask;
 use function Termwind\render;
 
 class WordleDecorator
 {
     public string $answer;
+    public string $errorText;
 
     public function showError(string $message)
     {
+
         render("<div class='mt-1 text-white bg-gray-900'><span class='text-red-600 font-bold mr-1'>Whoops</span> {$message}</div>");
     }
     public function showSuccess(string $message)
