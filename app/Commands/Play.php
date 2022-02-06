@@ -4,9 +4,8 @@ namespace App\Commands;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use LaravelZero\Framework\Commands\Command;
-use Symfony\Component\BrowserKit\AbstractBrowser;
 use function Termwind\{render, ask, terminal};
-
+use App\WordleValidator;
 
 
 class Play extends Command
@@ -18,6 +17,7 @@ class Play extends Command
     private string $startDate = "2022-02-05";
     private int $startWordle = 231;
     private string $gameStatus = "inProgress";
+    private $validator;
     /**
      * The signature of the command.
      *
@@ -38,6 +38,7 @@ class Play extends Command
         $this->guesses= collect();
         $this->answers=collect(config('answers'));
         $this->setAnswer();
+        $this->validator = new WordleValidator();
 
     }
     /**
@@ -57,7 +58,6 @@ class Play extends Command
             $this->showBoard();
         }
 
-        //while(sizeof($this->guesses) <= $this->maximumGuesses)
         while($this->gameStatus === "inProgress")
         {
 
@@ -68,7 +68,7 @@ class Play extends Command
                 break;
             }
             $guess = $this->askForGuess();
-            $isValid = $this->validateGuess($guess);
+            $isValid = $this->validator->validateGuess($guess, $this->guesses);
 
             if($isValid)
             {
@@ -159,42 +159,7 @@ class Play extends Command
             }
         }
     }
-    private function validateGuess(string $guess) : bool
-    {
-        if(str_contains($guess, ' '))
-        {
-            $this->showError("word cannot contain spaces.");
-            return false;
-        }
-        $guessArray = str_split(trim($guess));
 
-        if(sizeof($guessArray) < 5)
-        {
-            $this->showError('That guess is not long enough');
-            return false;
-        }
-
-        if(sizeof($guessArray) > 5)
-        {
-            $this->showError('That guess is too long');
-            return false;
-        }
-        // check if valid word
-        $pspell = pspell_new("en");
-
-        if(! pspell_check($pspell, $guess))
-        {
-            $this->showError('That is not a valid word');
-            return false;
-        }
-        if($this->guesses->contains($guess))
-        {
-            $this->showError('You already guessed that');
-            return false;
-        }
-
-        return true;
-    }
 
     private function showError(string $message)
     {
